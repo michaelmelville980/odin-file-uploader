@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int     @id @default(autoincrement())
+  username     String  @unique
+  password     String
+}
+
+model File {
+  id           Int      @id @default(autoincrement())
+  name         String  
+  type         String   // (image, pdf, etc.)
+  size         Int      // Size in bytes
+  path         String   // Path or URL to access the file
+  uploadedAt   DateTime @default(now())  // Timestamp of when the file was uploaded
+  folderId     Int?     // Optional folder reference
+  folder       Folder?  @relation(fields: [folderId], references: [id]) // Folder where file is stored
+}
+
+model Folder {
+  id        Int       @id @default(autoincrement())
+  name      String
+  parentId  Int?      // Parent folder (for nested structure)
+  parent    Folder?   @relation("FolderToFolder", fields: [parentId], references: [id])
+  children  Folder[]  @relation("FolderToFolder") // Nested folders
+  files     File[]    // Files within this folder
+}
+

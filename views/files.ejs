@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Your Files</h1>
+
+    <form action="/folders/new" method="POST" style="display: inline">
+      <button type="submit">New Folder</button>
+    </form>
+
+    <form
+      action="/files/upload"
+      method="POST"
+      enctype="multipart/form-data"
+      style="display: inline"
+    >
+      <button type="submit">Upload File</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Size</th>
+          <th>Created</th>
+          <th>Last Updated</th>
+          <th>Options</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Example row:
+      <tr>
+        <td>report.pdf</td>
+        <td>1.2 MB</td>
+        <td>2025-06-30 14:22</td>
+        <td>2025-06-30 14:22</td>
+        <td>
+          <form action="/files/123/download" method="POST" style="display: inline">
+            <button type="submit">Download</button>
+          </form>
+          <form action="/files/123/delete" method="POST" style="display: inline">
+            <button type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      --></tbody>
+    </table>
+  </body>
+</html>
