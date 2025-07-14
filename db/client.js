@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 async function createUser({ username, passwordHash }) {
   return prisma.user.create({ data: { username, passwordHash } });
 }
-//test 
+/
 async function findUserByUsername(username) {
   return prisma.user.findUnique({ where: { username } });
 }
