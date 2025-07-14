@@ -3,21 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Your Files</title>
   </head>
   <body>
     <h1>Your Files</h1>
 
-    <form action="/folders/new" method="POST" style="display: inline">
-      <button type="submit">New Folder</button>
+    <form action="/new-folders" method="POST">
+      <label for="folderName">Enter Folder Name:</label>
+      <input
+        type="text"
+        id="folderName"
+        name="folderName"
+        placeholder="New Folder"
+        required
+      />
+      <button type="submit">Add Folder</button>
     </form>
 
     <form
-      action="/files/upload"
+      action="/upload-files"
       method="POST"
       enctype="multipart/form-data"
-      style="display: inline"
     >
+      <label for="file">Choose file:</label>
+      <input type="file" id="file" name="uploadedFile" required />
       <button type="submit">Upload File</button>
     </form>
 
@@ -25,29 +34,69 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Size</th>
-          <th>Created</th>
-          <th>Last Updated</th>
+          <th>Type</th>
+          <th>Size (bytes)</th>
+          <th>Uploaded At</th>
           <th>Options</th>
         </tr>
       </thead>
       <tbody>
-        <!-- Example row:
-      <tr>
-        <td>report.pdf</td>
-        <td>1.2 MB</td>
-        <td>2025-06-30 14:22</td>
-        <td>2025-06-30 14:22</td>
-        <td>
-          <form action="/files/123/download" method="POST" style="display: inline">
-            <button type="submit">Download</button>
-          </form>
-          <form action="/files/123/delete" method="POST" style="display: inline">
-            <button type="submit">Delete</button>
-          </form>
-        </td>
-      </tr>
-      --></tbody>
+
+        <%
+          if (items && items.length > 0) {
+            items.sort((a, b) => a.type === b.type ? 0 : (a.type === 'FOLDER' ? -1 : 1));
+            items.forEach(item => {
+        %>
+
+        
+          <tr>
+            <td>
+              <% if (item.type === 'FOLDER') { %>
+                <a href="/folders/<%= item.id %>/files"><%= item.name %></a>
+              <% } else { %>
+                <%= item.name %>
+              <% } %>
+            </td>
+            <td><%= item.type.toLowerCase() %></td>
+            <td>
+              <% if (item.type === 'FILE') { %>
+                <%= item.size %>
+              <% } %>
+            </td>
+            <td>
+              <% if (item.type === 'FILE') { %>
+                <%= item.uploadedAt.toLocaleString() %>
+              <% } %>
+            </td>
+            <td>
+              <% if (item.type === 'FILE') { %>
+                <form
+                  action="/files/<%= item.id %>/download"
+                  method="POST"
+                  style="display:inline"
+                >
+                  <button type="submit">Download</button>
+                </form>
+              <% } %>
+              <!-- Show delete for both folders & files -->
+              <form
+                action="/items/<%= item.id %>/delete"
+                method="POST"
+                style="display:inline"
+              >
+                <button type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% 
+            });
+          } else { 
+        %>
+          <tr>
+            <td colspan="5">This folder is empty.</td>
+          </tr>
+        <% } %>
+      </tbody>
     </table>
   </body>
 </html>

@@ -6,7 +6,7 @@ const session = require("express-session");
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const LocalStrategy = require("passport-local").Strategy;
-const db = require("./db/queries");
+const db = require("./db/client.js");
 
 // Running Main Router
 const app = express();
@@ -37,7 +37,7 @@ passport.use(
       if (!user) {
         return done(null, false, { message: "No such user" });
       }
-      const match = await bcrypt.compare(password, user.password_hash);
+      const match = await bcrypt.compare(password, user.passwordHash);
       if (!match) {
         return done(null, false, { message: "Incorrect password" });
       }

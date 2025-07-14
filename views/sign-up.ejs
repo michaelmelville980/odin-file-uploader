@@ -6,6 +6,17 @@
     <title>Document</title>
   </head>
   <body>
+
+    <!-- Error list -->
+    <% if (errors && errors.length) { %>
+      <ul style="color: red;">
+        <% errors.forEach(error => { %>
+          <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+
+    <!-- Form -->
     <h1>Sign Up</h1>
     <form action="/sign-up" method="POST">
       <label for="username">Username</label>
@@ -18,7 +29,7 @@
     </form>
 
     <p>
-      <a href="/sign-in">Back to Sign In</a>
+      <a href="/">Back to Sign In</a>
     </p>
   </body>
 </html>

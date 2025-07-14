@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -15,28 +14,30 @@ datasource db {
 }
 
 model User {
-  id           Int     @id @default(autoincrement())
-  username     String  @unique
-  password     String
+  id           Int    @id @default(autoincrement())
+  username     String @unique
+  passwordHash String
 }
 
-model File {
-  id           Int      @id @default(autoincrement())
-  name         String  
-  type         String   // (image, pdf, etc.)
-  size         Int      // Size in bytes
-  path         String   // Path or URL to access the file
-  uploadedAt   DateTime @default(now())  // Timestamp of when the file was uploaded
-  folderId     Int?     // Optional folder reference
-  folder       Folder?  @relation(fields: [folderId], references: [id]) // Folder where file is stored
+enum ItemType {
+  FOLDER
+  FILE
 }
 
-model Folder {
-  id        Int       @id @default(autoincrement())
-  name      String
-  parentId  Int?      // Parent folder (for nested structure)
-  parent    Folder?   @relation("FolderToFolder", fields: [parentId], references: [id])
-  children  Folder[]  @relation("FolderToFolder") // Nested folders
-  files     File[]    // Files within this folder
+model Item {
+  id         Int       @id @default(autoincrement())
+  parentId   Int?
+  parent     Item?     @relation("ItemToItem", fields: [parentId], references: [id])
+  children   Item[]    @relation("ItemToItem")
+  isSelected Boolean   @default(false)
+
+  name       String    // user-visible filename or folder name
+  type       ItemType  @default(FILE)
+
+  // only for files:
+  size       Int       // in bytes
+  storageKey String    // your on-disk path or S3 key
+
+  uploadedAt DateTime  @default(now())
 }
 
